@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+    <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+    <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
+
+    <solutionClass>com.sparsity.routeplanner.vrpdomain.VehicleRoutingSolution</solutionClass>
+    <entityClass>com.sparsity.routeplanner.vrpdomain.Standstill</entityClass>
+    <entityClass>com.sparsity.routeplanner.vrpdomain.Customer</entityClass>
+
+    <scoreDirectorFactory>
+        <scoreDrl>com/sparsity/routeplanner/solver/cvrpRules.drl</scoreDrl>
+    </scoreDirectorFactory>
+
+    <termination>
+        <secondsSpentLimit>60</secondsSpentLimit>
+    </termination>
+
+    <moveThreadCount>AUTO</moveThreadCount>
+</solver>

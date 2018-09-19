@@ -1,0 +1,50 @@
+package com.sparsity.routeplanner.vrpdomain;
+    dialect "java"
+
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
+
+import com.sparsity.routeplanner.vrpdomain.Depot;
+import com.sparsity.routeplanner.vrpdomain.Location;
+import com.sparsity.routeplanner.vrpdomain.Vehicle;
+import com.sparsity.routeplanner.vrpdomain.VehicleRoutingSolution;
+import com.sparsity.routeplanner.vrpdomain.Customer;
+
+global HardSoftDoubleScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "vehicleCapacity"
+    when
+        $vehicle : Vehicle($capacity : capacity)
+        accumulate(
+            Customer(
+                vehicle == $vehicle,
+                $demand : demand);
+            $demandTotal : sum($demand);
+            $demandTotal > $capacity
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal);
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "distanceToPreviousStandstill"
+    when
+        $customer : Customer(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
+end
+
+rule "distanceFromLastCustomerToDepot"
+    when
+        $customer : Customer(previousStandstill != null)
+        not Customer(previousStandstill == $customer)
+    then
+        Vehicle vehicle = $customer.getVehicle();
+        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
+end

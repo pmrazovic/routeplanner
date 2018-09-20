@@ -29,6 +29,23 @@ rule "vehicleCapacity"
         scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal);
 end
 
+
+rule "vehicleMaxDistance"
+    when
+        $vehicle : Vehicle($maxDistance : maxDistance)
+        $lastCustomer : Customer(previousStandstill != null, vehicle == $vehicle)
+        not Customer(previousStandstill == $lastCustomer)
+        accumulate(
+            Customer(
+                vehicle == $vehicle,
+                $distanceFromPreviousStandstill : distanceFromPreviousStandstill);
+            $distanceTotal : sum($distanceFromPreviousStandstill);
+            $distanceTotal + $lastCustomer.getDistanceTo($vehicle) > $maxDistance
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $maxDistance - $distanceTotal -  $lastCustomer.getDistanceTo($vehicle));
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -47,4 +64,11 @@ rule "distanceFromLastCustomerToDepot"
     then
         Vehicle vehicle = $customer.getVehicle();
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
+end
+
+rule "highPriorityCustomers"
+    when
+        $customer : Customer(previousStandstill != null, $visitIndex : visitIndex, priority > 0)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $visitIndex * 50);
 end

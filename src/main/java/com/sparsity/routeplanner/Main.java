@@ -52,8 +52,16 @@ public class Main {
                 depotId = 1;
             }
             newVehicle.setDepot(depotList.get(depotId));
+            newVehicle.setMaxDistance(1000);
             vehicleList.add(newVehicle);
         }
+
+        // Assign priorities to some of the customers
+        customerList.get(5).setPriority(1);
+        customerList.get(10).setPriority(1);
+        customerList.get(15).setPriority(1);
+        customerList.get(25).setPriority(1);
+        customerList.get(30).setPriority(1);
 
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource("com/sparsity/routeplanner/solver/cvrpConfig.xml");
         Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();

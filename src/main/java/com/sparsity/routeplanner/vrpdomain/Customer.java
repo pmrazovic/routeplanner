@@ -14,9 +14,9 @@ import java.math.BigDecimal;
 public class Customer implements Standstill {
 
     protected String id;
-
     protected Location location;
     protected int demand;
+    protected int priority = 0;
 
     // Planning variables: changes during planning, between score calculations.
     protected Standstill previousStandstill;
@@ -49,6 +49,14 @@ public class Customer implements Standstill {
 
     public void setDemand(int demand) {
         this.demand = demand;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"vehicleRange", "customerRange"},
@@ -99,6 +107,12 @@ public class Customer implements Standstill {
 
     public double getDistanceTo(Standstill standstill) {
         return location.getDistanceTo(standstill.getLocation());
+    }
+
+    // TODO: Maybe introduce shadow variable and listener class instead of this recursive calls
+    @Override
+    public int getVisitIndex() {
+        return 1 + previousStandstill.getVisitIndex();
     }
 
     @Override

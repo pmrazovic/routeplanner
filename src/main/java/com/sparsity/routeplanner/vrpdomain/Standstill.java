@@ -23,4 +23,6 @@ public interface Standstill {
     Customer getNextCustomer();
     void setNextCustomer(Customer nextCustomer);
 
+    int getVisitIndex();
+
 }

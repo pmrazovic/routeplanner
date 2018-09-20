@@ -53,6 +53,11 @@ public class SolutionPainter {
             g.fillRect(x - 1, y - 1, 3, 3);
             String demandString = Integer.toString(customer.getDemand());
             g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE / 2);
+            if (customer.getPriority() > 0) {
+                g.setColor(TangoColorFactory.SCARLET_2);
+                String priorityString = "Priority";
+                g.drawString(priorityString, x - (g.getFontMetrics().stringWidth(priorityString) / 2), y - TEXT_SIZE * 2 );
+            }
         }
 
         g.setColor(TangoColorFactory.ALUMINIUM_3);
@@ -71,9 +76,11 @@ public class SolutionPainter {
             Customer vehicleInfoCustomer = null;
             double longestNonDepotDistance = -1L;
             int load = 0;
+            double totalDistance = 0;
             for (Customer customer : solution.getCustomerList()) {
                 if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
+                    totalDistance += customer.getDistanceFromPreviousStandstill();
                     Location previousLocation = customer.getPreviousStandstill().getLocation();
                     Location location = customer.getLocation();
                     translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
@@ -92,6 +99,7 @@ public class SolutionPainter {
                     // Line back to the vehicle depot
                     if (customer.getNextCustomer() == null) {
                         Location vehicleLocation = vehicle.getLocation();
+                        totalDistance += customer.getDistanceTo(vehicle);
                         translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
                                 vehicleLocation.getLongitude(), vehicleLocation.getLatitude(), true, true);
                     }
@@ -99,9 +107,6 @@ public class SolutionPainter {
             }
             // Draw vehicle info
             if (vehicleInfoCustomer != null) {
-                if (load > vehicle.getCapacity()) {
-                    g.setColor(TangoColorFactory.SCARLET_2);
-                }
                 Location previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
                 Location location = vehicleInfoCustomer.getLocation();
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
@@ -114,8 +119,16 @@ public class SolutionPainter {
                 int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
                 g.drawImage(vehicleImageIcon.getImage(),
                         x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), imageObserver);
-                g.drawString(load + " / " + vehicle.getCapacity(),
+                if (load > vehicle.getCapacity()) {
+                    g.setColor(TangoColorFactory.SCARLET_2);
+                }
+                g.drawString("Cap: " + load + "/" + vehicle.getCapacity(),
                         x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
+                if (totalDistance > vehicle.getMaxDistance()) {
+                    g.setColor(TangoColorFactory.SCARLET_2);
+                }
+                g.drawString("Dist: " + NUMBER_FORMAT.format(totalDistance) + "/" + NUMBER_FORMAT.format(vehicle.getMaxDistance()),
+                        x + 1, (ascending ? y + TEXT_SIZE - 1 : y + vehicleInfoHeight + TEXT_SIZE + 1));
             }
             colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
         }

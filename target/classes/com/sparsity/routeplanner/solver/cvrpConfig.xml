@@ -15,5 +15,5 @@
         <secondsSpentLimit>60</secondsSpentLimit>
     </termination>
 
-    <moveThreadCount>AUTO</moveThreadCount>
+    <moveThreadCount>8</moveThreadCount>
 </solver>

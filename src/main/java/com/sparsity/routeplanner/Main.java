@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
 
@@ -26,6 +27,8 @@ public class Main {
         int[] demands = {0,0,26,18,16,8,7,11,4,9,9,16,7,6,1,2,22,23,4,3,20,7,1,2,12,22,6,11,12,2,14,14,2,9,20,2,18,19,18,4,16,26,3,23,16,10,9,21,24,24,19,12,16,6,2,2,2,23,16,26,21,2,7};
         int vehicleCount = 8;
 
+
+        Random ran = new Random();
         for (int i = 0; i < demands.length; i++) {
             Location newLocation = new Location(i, lats[i], lons[i]);
             newLocation.setName("Loc" + String.valueOf(i));
@@ -39,6 +42,7 @@ public class Main {
                 newCustomer.setId("Customer_" + String.valueOf(i));
                 newCustomer.setLocation(newLocation);
                 newCustomer.setDemand(demands[i]);
+                newCustomer.setPriority(ran.nextInt(11));
                 customerList.add(newCustomer);
             }
         }
@@ -55,13 +59,6 @@ public class Main {
             newVehicle.setMaxDistance(1000);
             vehicleList.add(newVehicle);
         }
-
-        // Assign priorities to some of the customers
-        customerList.get(5).setPriority(1);
-        customerList.get(10).setPriority(1);
-        customerList.get(15).setPriority(1);
-        customerList.get(25).setPriority(1);
-        customerList.get(30).setPriority(1);
 
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource("com/sparsity/routeplanner/solver/cvrpConfig.xml");
         Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();

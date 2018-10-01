@@ -42,15 +42,16 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public double getDistanceTo(Location location) {
+    public long getDistanceTo(Location location) {
         return getAirDistanceTo(location);
     }
 
-    public double getAirDistanceTo(Location location) {
+    public long getAirDistanceTo(Location location) {
         double latitudeDifference = location.latitude - latitude;
         double longitudeDifference = location.longitude - longitude;
-        return Math.sqrt(
-                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        double distance = Math.sqrt((latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        // TODO: Choose adequate factor
+        return (long) (distance * 1000.0);
     }
 
     /**

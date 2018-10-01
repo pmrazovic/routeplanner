@@ -10,7 +10,7 @@ public class Vehicle implements Standstill {
 
     protected int capacity;
     protected Depot depot;
-    protected double maxDistance;
+    protected long maxDistance;
 
     // Shadow variables
     protected Customer nextCustomer;
@@ -32,12 +32,13 @@ public class Vehicle implements Standstill {
         this.capacity = capacity;
     }
 
-    public double getMaxDistance() {
+    public long getMaxDistance() {
         return maxDistance;
     }
 
+    // TODO: Choose scaling factor
     public void setMaxDistance(double maxDistance) {
-        this.maxDistance = maxDistance;
+        this.maxDistance = (long) (maxDistance * 1000.0);
     }
 
     public Depot getDepot() {
@@ -72,7 +73,7 @@ public class Vehicle implements Standstill {
         return depot.getLocation();
     }
 
-    public double getDistanceTo(Standstill standstill) {
+    public long getDistanceTo(Standstill standstill) {
         return depot.getDistanceTo(standstill);
     }
 

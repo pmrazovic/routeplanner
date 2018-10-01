@@ -1,7 +1,7 @@
 package com.sparsity.routeplanner.vrpdomain;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 
 import com.sparsity.routeplanner.vrpdomain.Depot;
 import com.sparsity.routeplanner.vrpdomain.Location;
@@ -9,7 +9,7 @@ import com.sparsity.routeplanner.vrpdomain.Vehicle;
 import com.sparsity.routeplanner.vrpdomain.VehicleRoutingSolution;
 import com.sparsity.routeplanner.vrpdomain.Customer;
 
-global HardSoftDoubleScoreHolder scoreHolder;
+global HardSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -47,6 +47,18 @@ rule "vehicleMaxDistance"
 end
 
 // ############################################################################
+// Medium constraints
+// ############################################################################
+
+//rule "dummyVehicleScore"
+//    when
+//        $vehicle : Vehicle(dummy == true)
+//        $customer : Customer(vehicle == $vehicle)
+//    then
+//        scoreHolder.addMediumConstraintMatch(kcontext, - $customer.getPriority());
+//end
+
+// ############################################################################
 // Soft constraints
 // ############################################################################
 
@@ -66,9 +78,9 @@ rule "distanceFromLastCustomerToDepot"
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 end
 
-rule "highPriorityCustomers"
-    when
-        $customer : Customer(previousStandstill != null, $visitIndex : visitIndex, priority > 0)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $visitIndex * 50);
-end
+//rule "highPriorityCustomers"
+//    when
+//        $customer : Customer(previousStandstill != null, $visitIndex : visitIndex, priority > 0)
+//    then
+//        scoreHolder.addSoftConstraintMatch(kcontext, - $visitIndex * 50);
+//end

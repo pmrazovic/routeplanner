@@ -93,7 +93,7 @@ public class Customer implements Standstill {
     // Complex methods
     // ************************************************************************
 
-    public double getDistanceFromPreviousStandstill() {
+    public long getDistanceFromPreviousStandstill() {
         if (previousStandstill == null) {
             throw new IllegalStateException("This method must not be called when the previousStandstill ("
                     + previousStandstill + ") is not initialized yet.");
@@ -101,11 +101,11 @@ public class Customer implements Standstill {
         return getDistanceFrom(previousStandstill);
     }
 
-    public double getDistanceFrom(Standstill standstill) {
+    public long getDistanceFrom(Standstill standstill) {
         return standstill.getLocation().getDistanceTo(location);
     }
 
-    public double getDistanceTo(Standstill standstill) {
+    public long getDistanceTo(Standstill standstill) {
         return location.getDistanceTo(standstill.getLocation());
     }
 

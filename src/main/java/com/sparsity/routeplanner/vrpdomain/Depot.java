@@ -22,7 +22,7 @@ public class Depot {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public double getDistanceTo(Standstill standstill) {
+    public long getDistanceTo(Standstill standstill) {
         return location.getDistanceTo(standstill.getLocation());
     }
 

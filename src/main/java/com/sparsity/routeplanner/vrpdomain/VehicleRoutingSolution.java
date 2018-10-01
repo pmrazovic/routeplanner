@@ -6,6 +6,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -19,7 +20,7 @@ public class VehicleRoutingSolution {
     protected List<Vehicle> vehicleList;
     protected List<Customer> customerList;
 
-    protected HardSoftDoubleScore score;
+    protected HardSoftLongScore score;
 
     public String getName() {
         return name;
@@ -69,11 +70,11 @@ public class VehicleRoutingSolution {
     }
 
     @PlanningScore
-    public HardSoftDoubleScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftDoubleScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 
@@ -81,7 +82,8 @@ public class VehicleRoutingSolution {
         if (score == null) {
             return null;
         }
-        double distance = - score.getSoftScore();
-        return numberFormat.format(distance);
+        long distance = - score.getSoftScore();
+        // TODO: Choose adequate scaling factor
+        return numberFormat.format(((double) distance) / 1000.0);
     }
 }

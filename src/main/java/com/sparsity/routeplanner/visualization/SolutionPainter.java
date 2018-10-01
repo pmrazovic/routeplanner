@@ -2,6 +2,7 @@ package com.sparsity.routeplanner.visualization;
 
 import com.sparsity.routeplanner.vrpdomain.*;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,13 +52,8 @@ public class SolutionPainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
-            String demandString = Integer.toString(customer.getDemand());
-            g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE / 2);
-            if (customer.getPriority() > 0) {
-                g.setColor(TangoColorFactory.SCARLET_2);
-                String priorityString = "Priority";
-                g.drawString(priorityString, x - (g.getFontMetrics().stringWidth(priorityString) / 2), y - TEXT_SIZE * 2 );
-            }
+            String customerString = Integer.toString(customer.getDemand()) + " (" + Integer.toString(customer.getPriority()) + ")";
+            g.drawString(customerString, x - (g.getFontMetrics().stringWidth(customerString) / 2), y - TEXT_SIZE / 2);
         }
 
         g.setColor(TangoColorFactory.ALUMINIUM_3);
@@ -127,7 +123,8 @@ public class SolutionPainter {
                 if (totalDistance > vehicle.getMaxDistance()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                g.drawString("Dist: " + NUMBER_FORMAT.format(totalDistance) + "/" + NUMBER_FORMAT.format(vehicle.getMaxDistance()),
+                // TODO: Coose adeqate scaling factor
+                g.drawString("Dist: " + NUMBER_FORMAT.format(totalDistance / 1000.0) + "/" + NUMBER_FORMAT.format(vehicle.getMaxDistance()/1000.0),
                         x + 1, (ascending ? y + TEXT_SIZE - 1 : y + vehicleInfoHeight + TEXT_SIZE + 1));
             }
             colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
@@ -142,13 +139,13 @@ public class SolutionPainter {
                 ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString("Customer: demand", 15, (int) height - 5);
+        g.drawString("Customer: demand (priority)", 15, (int) height - 5);
         String customersSizeString = solution.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        HardSoftDoubleScore score = solution.getScore();
+        HardSoftLongScore score = solution.getScore();
         if (score != null) {
             String distanceString;
             if (!score.isFeasible()) {

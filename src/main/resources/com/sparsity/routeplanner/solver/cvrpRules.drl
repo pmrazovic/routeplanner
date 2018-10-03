@@ -1,7 +1,7 @@
 package com.sparsity.routeplanner.vrpdomain;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder
 
 import com.sparsity.routeplanner.vrpdomain.Depot;
 import com.sparsity.routeplanner.vrpdomain.Location;
@@ -9,7 +9,7 @@ import com.sparsity.routeplanner.vrpdomain.Vehicle;
 import com.sparsity.routeplanner.vrpdomain.VehicleRoutingSolution;
 import com.sparsity.routeplanner.vrpdomain.Customer;
 
-global HardSoftLongScoreHolder scoreHolder;
+global HardMediumSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -17,7 +17,7 @@ global HardSoftLongScoreHolder scoreHolder;
 
 rule "vehicleCapacity"
     when
-        $vehicle : Vehicle($capacity : capacity)
+        $vehicle : Vehicle(dummy == false, $capacity : capacity)
         accumulate(
             Customer(
                 vehicle == $vehicle,
@@ -32,7 +32,7 @@ end
 
 rule "vehicleMaxDistance"
     when
-        $vehicle : Vehicle($maxDistance : maxDistance)
+        $vehicle : Vehicle(dummy == false, $maxDistance : maxDistance)
         $lastCustomer : Customer(previousStandstill != null, vehicle == $vehicle)
         not Customer(previousStandstill == $lastCustomer)
         accumulate(
@@ -50,13 +50,13 @@ end
 // Medium constraints
 // ############################################################################
 
-//rule "dummyVehicleScore"
-//    when
-//        $vehicle : Vehicle(dummy == true)
-//        $customer : Customer(vehicle == $vehicle)
-//    then
-//        scoreHolder.addMediumConstraintMatch(kcontext, - $customer.getPriority());
-//end
+rule "dummyVehicleScore"
+    when
+        $vehicle : Vehicle(dummy == true)
+        $customer : Customer(vehicle == $vehicle)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, - $customer.getPriority());
+end
 
 // ############################################################################
 // Soft constraints

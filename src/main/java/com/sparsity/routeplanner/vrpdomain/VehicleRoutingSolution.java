@@ -5,8 +5,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -20,7 +19,7 @@ public class VehicleRoutingSolution {
     protected List<Vehicle> vehicleList;
     protected List<Customer> customerList;
 
-    protected HardSoftLongScore score;
+    protected HardMediumSoftLongScore score;
 
     public String getName() {
         return name;
@@ -70,11 +69,11 @@ public class VehicleRoutingSolution {
     }
 
     @PlanningScore
-    public HardSoftLongScore getScore() {
+    public HardMediumSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftLongScore score) {
+    public void setScore(HardMediumSoftLongScore score) {
         this.score = score;
     }
 

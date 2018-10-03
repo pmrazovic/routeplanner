@@ -12,7 +12,7 @@
     </scoreDirectorFactory>
 
     <termination>
-        <secondsSpentLimit>120</secondsSpentLimit>
+        <secondsSpentLimit>600</secondsSpentLimit>
     </termination>
 
     <moveThreadCount>AUTO</moveThreadCount>

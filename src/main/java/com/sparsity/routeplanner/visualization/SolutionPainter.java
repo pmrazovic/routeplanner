@@ -1,6 +1,7 @@
 package com.sparsity.routeplanner.visualization;
 
 import com.sparsity.routeplanner.vrpdomain.*;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
@@ -19,6 +20,7 @@ public class SolutionPainter {
 
     private ImageIcon depotImageIcon;
     private ImageIcon vehicleImageIcon;
+    private ImageIcon dummyVehicleImageIcon;
 
     private BufferedImage canvas = null;
     private LatitudeLongitudeTranslator translator = null;
@@ -26,6 +28,7 @@ public class SolutionPainter {
     public SolutionPainter() {
         depotImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "depot.png"));
         vehicleImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicle.png"));
+        dummyVehicleImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "ghost.png"));
     }
 
     public BufferedImage getCanvas() {
@@ -68,7 +71,11 @@ public class SolutionPainter {
 
         int colorIndex = 0;
         for (Vehicle vehicle : solution.getVehicleList()) {
-            g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
+            if (vehicle.isDummy()) {
+                g.setColor(new Color(228, 229, 229));
+            } else {
+                g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
+            }
             Customer vehicleInfoCustomer = null;
             double longestNonDepotDistance = -1L;
             int load = 0;
@@ -103,6 +110,13 @@ public class SolutionPainter {
             }
             // Draw vehicle info
             if (vehicleInfoCustomer != null) {
+                ImageIcon vehicleIcon;
+                if (vehicle.isDummy()) {
+                    vehicleIcon = dummyVehicleImageIcon;
+                } else {
+                    vehicleIcon = vehicleImageIcon;
+                }
+
                 Location previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
                 Location location = vehicleInfoCustomer.getLocation();
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
@@ -112,20 +126,23 @@ public class SolutionPainter {
                 boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
                         ^ (previousLocation.getLatitude() < location.getLatitude());
 
-                int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
-                g.drawImage(vehicleImageIcon.getImage(),
+                int vehicleInfoHeight = vehicleIcon.getIconHeight() + 2 + TEXT_SIZE;
+                g.drawImage(vehicleIcon.getImage(),
                         x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), imageObserver);
-                if (load > vehicle.getCapacity()) {
-                    g.setColor(TangoColorFactory.SCARLET_2);
+
+                if (!vehicle.isDummy()) {
+                    if (load > vehicle.getCapacity()) {
+                        g.setColor(TangoColorFactory.SCARLET_2);
+                    }
+                    g.drawString("Cap: " + load + "/" + vehicle.getCapacity(),
+                            x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
+                    if (totalDistance > vehicle.getMaxDistance()) {
+                        g.setColor(TangoColorFactory.SCARLET_2);
+                    }
+                    // TODO: Coose adeqate scaling factor
+                    g.drawString("Dist: " + NUMBER_FORMAT.format(totalDistance / 1000.0) + "/" + NUMBER_FORMAT.format(vehicle.getMaxDistance() / 1000.0),
+                            x + 1, (ascending ? y + TEXT_SIZE - 1 : y + vehicleInfoHeight + TEXT_SIZE + 1));
                 }
-                g.drawString("Cap: " + load + "/" + vehicle.getCapacity(),
-                        x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
-                if (totalDistance > vehicle.getMaxDistance()) {
-                    g.setColor(TangoColorFactory.SCARLET_2);
-                }
-                // TODO: Coose adeqate scaling factor
-                g.drawString("Dist: " + NUMBER_FORMAT.format(totalDistance / 1000.0) + "/" + NUMBER_FORMAT.format(vehicle.getMaxDistance()/1000.0),
-                        x + 1, (ascending ? y + TEXT_SIZE - 1 : y + vehicleInfoHeight + TEXT_SIZE + 1));
             }
             colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
         }
@@ -145,7 +162,7 @@ public class SolutionPainter {
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        HardSoftLongScore score = solution.getScore();
+        HardMediumSoftLongScore score = solution.getScore();
         if (score != null) {
             String distanceString;
             if (!score.isFeasible()) {

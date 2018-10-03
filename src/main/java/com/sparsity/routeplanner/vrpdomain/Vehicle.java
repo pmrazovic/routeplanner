@@ -11,6 +11,7 @@ public class Vehicle implements Standstill {
     protected int capacity;
     protected Depot depot;
     protected long maxDistance;
+    boolean dummy = false;
 
     // Shadow variables
     protected Customer nextCustomer;
@@ -57,6 +58,14 @@ public class Vehicle implements Standstill {
     @Override
     public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
+    }
+
+    public boolean isDummy() {
+        return dummy;
+    }
+
+    public void setDummy(boolean dummy) {
+        this.dummy = dummy;
     }
 
     // ************************************************************************

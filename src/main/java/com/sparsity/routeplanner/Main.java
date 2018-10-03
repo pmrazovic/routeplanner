@@ -42,9 +42,13 @@ public class Main {
                 newCustomer.setId("Customer_" + String.valueOf(i));
                 newCustomer.setLocation(newLocation);
                 newCustomer.setDemand(demands[i]);
-                newCustomer.setPriority(ran.nextInt(11));
+                newCustomer.setPriority(0);
                 customerList.add(newCustomer);
             }
+        }
+
+        for (int i = 0; i < 20; i++) {
+            customerList.get(ran.nextInt(61)).setPriority(1);
         }
 
         for (int i = 0; i < vehicleCount; i++) {
@@ -56,9 +60,17 @@ public class Main {
                 depotId = 1;
             }
             newVehicle.setDepot(depotList.get(depotId));
-            newVehicle.setMaxDistance(1000);
+            newVehicle.setMaxDistance(200);
             vehicleList.add(newVehicle);
         }
+
+        Vehicle dummyVehicle = new Vehicle();
+        dummyVehicle.setId("Dummy vehicle");
+        dummyVehicle.setCapacity(Integer.MAX_VALUE);
+        dummyVehicle.setMaxDistance(Double.MAX_VALUE);
+        dummyVehicle.setDepot(depotList.get(0));
+        dummyVehicle.setDummy(true);
+        vehicleList.add(dummyVehicle);
 
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource("com/sparsity/routeplanner/solver/cvrpConfig.xml");
         Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();

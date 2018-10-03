@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-    <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
-    <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
     <solutionClass>com.sparsity.routeplanner.vrpdomain.VehicleRoutingSolution</solutionClass>
     <entityClass>com.sparsity.routeplanner.vrpdomain.Standstill</entityClass>
     <entityClass>com.sparsity.routeplanner.vrpdomain.Customer</entityClass>
 
     <scoreDirectorFactory>
+        <!-- Score and constraint rules -->
         <scoreDrl>com/sparsity/routeplanner/solver/cvrpRules.drl</scoreDrl>
+        <!-- Initializing an extra variable can only change the score negatively -->
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     </scoreDirectorFactory>
 
+    <!-- Termination conditions -->
     <termination>
+        <!-- 10 minutes -->
         <secondsSpentLimit>600</secondsSpentLimit>
     </termination>
 
+    <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    </constructionHeuristic>
+    <localSearch>
+        <unionMoveSelector>
+            <changeMoveSelector/>
+            <swapMoveSelector/>
+            <subChainChangeMoveSelector>
+                <selectReversingMoveToo>true</selectReversingMoveToo>
+            </subChainChangeMoveSelector>
+            <subChainSwapMoveSelector>
+                <selectReversingMoveToo>true</selectReversingMoveToo>
+            </subChainSwapMoveSelector>
+            <!-- TODO use nearby selection to scale out -->
+        </unionMoveSelector>
+        <acceptor>
+            <entityTabuSize>5</entityTabuSize>
+            <lateAcceptanceSize>200</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+            <acceptedCountLimit>10</acceptedCountLimit>
+        </forager>
+    </localSearch>
+
+    <!-- Solve faster by saturating multiple CPU cores -->
     <moveThreadCount>AUTO</moveThreadCount>
 </solver>

@@ -42,13 +42,13 @@ public class Main {
                 newCustomer.setId("Customer_" + String.valueOf(i));
                 newCustomer.setLocation(newLocation);
                 newCustomer.setDemand(demands[i]);
-                newCustomer.setPriority(0);
+                newCustomer.setPriority(1);
                 customerList.add(newCustomer);
             }
         }
 
         for (int i = 0; i < 20; i++) {
-            customerList.get(ran.nextInt(61)).setPriority(1);
+            customerList.get(ran.nextInt(61)).setPriority(2);
         }
 
         for (int i = 0; i < vehicleCount; i++) {
@@ -60,7 +60,7 @@ public class Main {
                 depotId = 1;
             }
             newVehicle.setDepot(depotList.get(depotId));
-            newVehicle.setMaxDistance(200);
+            newVehicle.setMaxDistance(150);
             vehicleList.add(newVehicle);
         }
 

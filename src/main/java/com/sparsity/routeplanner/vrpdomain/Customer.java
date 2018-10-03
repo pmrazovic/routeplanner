@@ -10,7 +10,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import java.math.BigDecimal;
 
 // TODO: Add difficulty weight class
-@PlanningEntity
+@PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
 public class Customer implements Standstill {
 
     protected String id;

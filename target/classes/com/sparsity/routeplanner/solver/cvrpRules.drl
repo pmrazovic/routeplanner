@@ -3,7 +3,6 @@ package com.sparsity.routeplanner.vrpdomain;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder
 
-
 import com.sparsity.routeplanner.vrpdomain.Depot;
 import com.sparsity.routeplanner.vrpdomain.Location;
 import com.sparsity.routeplanner.vrpdomain.Vehicle;

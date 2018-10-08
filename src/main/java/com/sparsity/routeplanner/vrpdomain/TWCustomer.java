@@ -2,6 +2,7 @@ package com.sparsity.routeplanner.vrpdomain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 
+// TODO: Not implemented yet...
 public class TWCustomer {
 
     private long readyTime;

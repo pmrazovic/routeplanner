@@ -54,11 +54,6 @@ public class Location {
         return (long) (distance * 1000.0);
     }
 
-    /**
-     * The angle relative to the direction EAST.
-     * @param location never null
-     * @return in Cartesian coordinates
-     */
     public double getAngle(Location location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;

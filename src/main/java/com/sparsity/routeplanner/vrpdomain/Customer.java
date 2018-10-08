@@ -9,7 +9,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 
 import java.math.BigDecimal;
 
-// TODO: Add difficulty weight class
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
 public class Customer implements Standstill {
 
@@ -109,7 +108,7 @@ public class Customer implements Standstill {
         return location.getDistanceTo(standstill.getLocation());
     }
 
-    // TODO: Maybe introduce shadow variable and listener class instead of this recursive calls
+    // TODO: Maybe introduce shadow variable and listener class instead of these recursive calls
     @Override
     public int getVisitIndex() {
         return 1 + previousStandstill.getVisitIndex();

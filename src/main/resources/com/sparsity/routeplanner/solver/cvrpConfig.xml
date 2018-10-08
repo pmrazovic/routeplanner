@@ -19,9 +19,11 @@
     </termination>
 
     <constructionHeuristic>
+        <!-- Construction heuristic - plan for difficult entities first -->
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     </constructionHeuristic>
     <localSearch>
+        <!-- Local search moves: change, swap, also with chains -->
         <unionMoveSelector>
             <changeMoveSelector/>
             <swapMoveSelector/>
@@ -34,10 +36,13 @@
             <!-- TODO use nearby selection to scale out -->
         </unionMoveSelector>
         <acceptor>
+            <!-- Number of Tabu entities -->
             <entityTabuSize>5</entityTabuSize>
+            <!-- Number of last moves to consider for late acceptance -->
             <lateAcceptanceSize>200</lateAcceptanceSize>
         </acceptor>
         <forager>
+            <!-- Number of accepted moves -->
             <acceptedCountLimit>10</acceptedCountLimit>
         </forager>
     </localSearch>
